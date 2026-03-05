@@ -1,4 +1,4 @@
-import { spanRecordSchema } from './domains/observability/types';
+import { spanRecordSchema } from './domains/observability';
 import { buildStorageSchema } from './types';
 import type { StorageColumn, StorageTableConfig } from './types';
 

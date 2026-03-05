@@ -17,10 +17,10 @@ import type {
   ListTracesArgs,
   ListTracesResponse,
   SpanRecord,
-  TracingStorageStrategy,
   UpdateSpanArgs,
-} from './types';
-import { listTracesArgsSchema, toTraceSpans, TraceStatus } from './types';
+} from './tracing';
+
+import { listTracesArgsSchema, TraceStatus, toTraceSpans } from './tracing';
 
 /**
  * Internal structure for storing a trace with computed properties for efficient filtering
@@ -46,16 +46,6 @@ export class ObservabilityInMemory extends ObservabilityStorage {
 
   async dangerouslyClearAll(): Promise<void> {
     this.db.traces.clear();
-  }
-
-  public get tracingStrategy(): {
-    preferred: TracingStorageStrategy;
-    supported: TracingStorageStrategy[];
-  } {
-    return {
-      preferred: 'realtime',
-      supported: ['realtime', 'batch-with-updates', 'insert-only'],
-    };
   }
 
   async createSpan(args: CreateSpanArgs): Promise<void> {
