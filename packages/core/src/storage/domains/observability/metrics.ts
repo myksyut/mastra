@@ -28,7 +28,10 @@ import { spanIdField, traceIdField } from './tracing';
 // Field Schemas
 // ============================================================================
 
-/** Metric type schema for validation */
+/**
+ * @deprecated MetricType is no longer stored. All metrics are raw events
+ * with aggregation determined at query time.
+ */
 export const metricTypeSchema = z.enum(['counter', 'gauge', 'histogram']);
 
 const metricNameField = z.string().describe('Metric name (e.g., mastra_agent_duration_ms)');
@@ -53,7 +56,6 @@ export const metricRecordSchema = z
   .object({
     timestamp: z.date().describe('When the metric was recorded'),
     name: metricNameField,
-    metricType: metricTypeSchema.describe('Type of metric'),
     value: metricValueField.describe('Single observation value'),
     labels: labelsField.default({}),
 
@@ -115,7 +117,6 @@ export type MetricRecord = z.infer<typeof metricRecordSchema>;
 export const metricInputSchema = z
   .object({
     name: metricNameField,
-    metricType: metricTypeSchema,
     value: metricValueField,
     labels: labelsField.optional(),
   })
@@ -183,10 +184,6 @@ export const metricsFilterSchema = z
       .union([z.string(), z.array(z.string())])
       .optional()
       .describe('Filter by metric name(s)'),
-    metricType: z
-      .union([metricTypeSchema, z.array(metricTypeSchema)])
-      .optional()
-      .describe('Filter by metric type(s)'),
 
     // Correlation filters
     traceId: z.string().optional().describe('Filter by trace ID'),

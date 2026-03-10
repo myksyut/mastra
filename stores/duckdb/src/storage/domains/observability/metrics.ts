@@ -82,7 +82,6 @@ function buildMetricNameFilter(name: string | string[]): { clause: string; param
 const METRIC_COLUMNS = [
   'timestamp',
   'name',
-  'metricType',
   'value',
   'labels',
   'traceId',
@@ -120,7 +119,6 @@ export async function batchCreateMetrics(db: DuckDBConnection, args: BatchCreate
     return `(${[
       v(m.timestamp),
       v(m.name),
-      v(m.metricType),
       v(m.value),
       v(JSON.stringify(m.labels ?? {})),
       v(m.traceId ?? null),

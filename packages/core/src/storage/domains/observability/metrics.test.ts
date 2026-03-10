@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   aggregationIntervalSchema,
   aggregationTypeSchema,
-  batchCreateMetricsArgsSchema,
+  batchRecordMetricsArgsSchema,
   createMetricRecordSchema,
   getMetricAggregateArgsSchema,
   getMetricAggregateResponseSchema,
@@ -19,7 +19,6 @@ import {
   getTraceTagsArgsSchema,
   metricInputSchema,
   metricRecordSchema,
-  metricTypeSchema,
   metricsAggregationSchema,
   metricsFilterSchema,
 } from './metrics';
@@ -27,25 +26,12 @@ import {
 describe('Metric Schemas', () => {
   const now = new Date();
 
-  describe('metricTypeSchema', () => {
-    it('accepts valid metric types', () => {
-      for (const type of ['counter', 'gauge', 'histogram'] as const) {
-        expect(metricTypeSchema.parse(type)).toBe(type);
-      }
-    });
-
-    it('rejects invalid metric types', () => {
-      expect(() => metricTypeSchema.parse('timer')).toThrow();
-    });
-  });
-
   describe('metricRecordSchema', () => {
     it('accepts a complete metric record', () => {
       const record = metricRecordSchema.parse({
         id: 'metric-1',
         timestamp: now,
         name: 'mastra_agent_duration_ms',
-        metricType: 'histogram',
         value: 150.5,
         labels: { agent: 'weatherAgent', status: 'success' },
         metadata: { environment: 'production' },
@@ -61,7 +47,6 @@ describe('Metric Schemas', () => {
         id: 'metric-2',
         timestamp: now,
         name: 'mastra_tool_calls_started',
-        metricType: 'counter',
         value: 1,
         createdAt: now,
         updatedAt: null,
@@ -74,7 +59,6 @@ describe('Metric Schemas', () => {
         id: 'metric-3',
         timestamp: now,
         name: 'test',
-        metricType: 'counter',
         value: 1,
         traceId: 'trace-1',
         spanId: 'span-1',
@@ -103,7 +87,6 @@ describe('Metric Schemas', () => {
     it('accepts valid user input', () => {
       const input = metricInputSchema.parse({
         name: 'mastra_agent_runs_started',
-        metricType: 'counter',
         value: 1,
         labels: { agent: 'testAgent' },
       });
@@ -113,7 +96,6 @@ describe('Metric Schemas', () => {
     it('accepts minimal input without labels', () => {
       const input = metricInputSchema.parse({
         name: 'queue_depth',
-        metricType: 'gauge',
         value: 42,
       });
       expect(input.labels).toBeUndefined();
@@ -126,7 +108,6 @@ describe('Metric Schemas', () => {
         id: 'metric-1',
         timestamp: now,
         name: 'test',
-        metricType: 'counter',
         value: 1,
       });
       expect(record).not.toHaveProperty('createdAt');
@@ -134,12 +115,12 @@ describe('Metric Schemas', () => {
     });
   });
 
-  describe('batchCreateMetricsArgsSchema', () => {
+  describe('batchRecordMetricsArgsSchema', () => {
     it('accepts an array of metric records', () => {
-      const args = batchCreateMetricsArgsSchema.parse({
+      const args = batchRecordMetricsArgsSchema.parse({
         metrics: [
-          { id: 'm1', timestamp: now, name: 'test', metricType: 'counter', value: 1 },
-          { id: 'm2', timestamp: now, name: 'test', metricType: 'counter', value: 2 },
+          { id: 'm1', timestamp: now, name: 'test', value: 1 },
+          { id: 'm2', timestamp: now, name: 'test', value: 2 },
         ],
       });
       expect(args.metrics).toHaveLength(2);
@@ -181,7 +162,6 @@ describe('Metric Schemas', () => {
       const filter = metricsFilterSchema.parse({
         timestamp: { start: now },
         name: ['mastra_agent_duration_ms', 'mastra_tool_duration_ms'],
-        metricType: 'histogram',
         labels: { agent: 'weatherAgent' },
         environment: 'production',
         traceId: 'trace-1',
@@ -189,7 +169,6 @@ describe('Metric Schemas', () => {
         experimentId: 'exp-1',
       });
       expect(filter.name).toHaveLength(2);
-      expect(filter.metricType).toBe('histogram');
       expect(filter.traceId).toBe('trace-1');
       expect(filter.experimentId).toBe('exp-1');
     });

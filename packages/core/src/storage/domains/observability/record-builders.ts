@@ -159,7 +159,6 @@ export function buildMetricRecord(event: MetricEvent): CreateMetricRecord {
   return {
     timestamp: m.timestamp,
     name: m.name,
-    metricType: m.metricType,
     value: m.value,
     labels,
     entityType: toEntityType(entityType),

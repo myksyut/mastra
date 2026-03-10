@@ -43,7 +43,6 @@ export const METRIC_EVENTS_DDL = `
 CREATE TABLE IF NOT EXISTS metric_events (
   timestamp TIMESTAMP NOT NULL,
   name VARCHAR NOT NULL,
-  metricType VARCHAR NOT NULL,
   value DOUBLE NOT NULL,
   labels JSON DEFAULT '{}',
   traceId VARCHAR,

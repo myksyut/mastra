@@ -314,12 +314,11 @@ describe('ObservabilityStorageDuckDB', () => {
   describe('metrics', () => {
     beforeEach(async () => {
       // Insert sample metrics
-      await storage.batchCreateMetrics({
+      await storage.batchRecordMetrics({
         metrics: [
           {
             timestamp: new Date('2026-01-01T00:00:00Z'),
             name: 'mastra_agent_duration_ms',
-            metricType: 'histogram',
             value: 100,
             labels: { status: 'ok' },
             entityType: 'agent',
@@ -328,7 +327,6 @@ describe('ObservabilityStorageDuckDB', () => {
           {
             timestamp: new Date('2026-01-01T00:00:05Z'),
             name: 'mastra_agent_duration_ms',
-            metricType: 'histogram',
             value: 200,
             labels: { status: 'ok' },
             entityType: 'agent',
@@ -337,7 +335,6 @@ describe('ObservabilityStorageDuckDB', () => {
           {
             timestamp: new Date('2026-01-01T00:00:10Z'),
             name: 'mastra_agent_duration_ms',
-            metricType: 'histogram',
             value: 500,
             labels: { status: 'error' },
             entityType: 'agent',
@@ -346,7 +343,6 @@ describe('ObservabilityStorageDuckDB', () => {
           {
             timestamp: new Date('2026-01-01T01:00:00Z'),
             name: 'mastra_tool_calls_started',
-            metricType: 'counter',
             value: 1,
             labels: {},
             entityType: 'tool',
@@ -450,12 +446,11 @@ describe('ObservabilityStorageDuckDB', () => {
 
   describe('discovery', () => {
     beforeEach(async () => {
-      await storage.batchCreateMetrics({
+      await storage.batchRecordMetrics({
         metrics: [
           {
             timestamp: new Date(),
             name: 'mastra_agent_duration_ms',
-            metricType: 'histogram',
             value: 100,
             labels: { agent: 'weatherAgent', status: 'ok' },
             entityType: 'agent',
@@ -464,7 +459,6 @@ describe('ObservabilityStorageDuckDB', () => {
           {
             timestamp: new Date(),
             name: 'mastra_tool_calls_started',
-            metricType: 'counter',
             value: 1,
             labels: { tool: 'search' },
           },
