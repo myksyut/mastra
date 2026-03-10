@@ -1,5 +1,28 @@
 # @mastra/voice-google-gemini-live
 
+## 0.11.3-alpha.0
+
+### Patch Changes
+
+- Add new models to GeminiVoiceModel type and mark deprecated models with `@deprecated` JSDoc. ([#12625](https://github.com/mastra-ai/mastra/pull/12625))
+
+  **Added:**
+  - `gemini-live-2.5-flash-native-audio` (GA)
+  - `gemini-live-2.5-flash-preview-native-audio-09-2025`
+  - `gemini-2.5-flash-native-audio-preview-12-2025`
+  - `gemini-2.5-flash-native-audio-preview-09-2025`
+
+  **Deprecated:**
+  - `gemini-2.0-flash-exp` (shut down 2025-12-09)
+  - `gemini-2.0-flash-exp-image-generation` (shut down 2025-11-14)
+  - `gemini-2.0-flash-live-001` (shut down 2025-12-09)
+  - `gemini-live-2.5-flash-preview-native-audio` (use `gemini-live-2.5-flash-preview-native-audio-09-2025`)
+  - `gemini-2.5-flash-exp-native-audio-thinking-dialog` (shut down 2025-10-20)
+  - `gemini-live-2.5-flash-preview` (shut down 2025-12-09)
+
+- Updated dependencies [[`6bcbf8a`](https://github.com/mastra-ai/mastra/commit/6bcbf8a6774d5a53b21d61db8a45ce2593ca1616), [`6dc2192`](https://github.com/mastra-ai/mastra/commit/6dc21921aef0f0efab15cd0805fa3d18f277a76f), [`4b8da97`](https://github.com/mastra-ai/mastra/commit/4b8da97a5ce306e97869df6c39535d9069e563db)]:
+  - @mastra/core@1.11.0-alpha.1
+
 ## 0.11.2
 
 ### Patch Changes
