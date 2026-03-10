@@ -112,9 +112,9 @@ export const LIST_TRACES_ROUTE = createRoute({
   responseType: 'json',
   queryParamSchema: wrapSchemaForQueryParams(
     tracesFilterSchema
-      .extend(paginationArgsSchema.shape)
-      .extend(tracesOrderBySchema.shape)
-      .extend(legacyQueryParamsSchema.shape) // Accept legacy params for backward compatibility
+      .merge(paginationArgsSchema)
+      .merge(tracesOrderBySchema)
+      .merge(legacyQueryParamsSchema) // Accept legacy params for backward compatibility
       .partial(),
   ),
   responseSchema: listTracesResponseSchema,

@@ -65,6 +65,7 @@ export const noOpLoggerContext: LoggerContext = {
  * Used when observability is not configured.
  */
 export const noOpMetricsContext: MetricsContext = {
+  emit() {},
   counter() {
     return noOpCounter;
   },
