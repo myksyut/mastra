@@ -48,7 +48,6 @@ import type {
   ExportedScore,
   ExportedFeedback,
   LogLevel,
-  MetricType,
 } from '@mastra/core/observability';
 import { TracingEventType as EventType } from '@mastra/core/observability';
 
@@ -99,8 +98,6 @@ export interface TestExporterStats {
   logsByLevel: Record<string, number>;
   /** Total number of metric events collected */
   totalMetrics: number;
-  /** Breakdown of metrics by type */
-  metricsByType: Record<string, number>;
   /** Breakdown of metrics by name */
   metricsByName: Record<string, number>;
   /** Total number of score events collected */
@@ -406,7 +403,7 @@ export class TestExporter extends BaseExporter {
       const labelsStr = Object.entries(metric.labels)
         .map(([k, v]) => `${k}=${v}`)
         .join(', ');
-      const logMessage = `[TestExporter] metric.${metric.metricType}: ${metric.name}=${metric.value}${labelsStr ? ` {${labelsStr}}` : ''}`;
+      const logMessage = `[TestExporter] metric: ${metric.name}=${metric.value}${labelsStr ? ` {${labelsStr}}` : ''}`;
       this.#debugLogs.push(logMessage);
     }
 
@@ -690,10 +687,10 @@ export class TestExporter extends BaseExporter {
   }
 
   /**
-   * Get metrics filtered by type
+   * @deprecated MetricType is no longer stored. Use getMetricsByName() instead.
    */
-  getMetricsByType(metricType: MetricType): ExportedMetric[] {
-    return this.#metricEvents.filter(e => e.metric.metricType === metricType).map(e => e.metric);
+  getMetricsByType(_metricType: string): ExportedMetric[] {
+    return [];
   }
 
   // ============================================================================
@@ -793,11 +790,8 @@ export class TestExporter extends BaseExporter {
     }
 
     // Metric breakdowns
-    const metricsByType: Record<string, number> = {};
     const metricsByName: Record<string, number> = {};
     for (const event of this.#metricEvents) {
-      const mType = event.metric.metricType;
-      metricsByType[mType] = (metricsByType[mType] || 0) + 1;
       const mName = event.metric.name;
       metricsByName[mName] = (metricsByName[mName] || 0) + 1;
     }
@@ -832,7 +826,6 @@ export class TestExporter extends BaseExporter {
       totalLogs: this.#logEvents.length,
       logsByLevel,
       totalMetrics: this.#metricEvents.length,
-      metricsByType,
       metricsByName,
       totalScores: this.#scoreEvents.length,
       scoresByScorer,

@@ -55,7 +55,6 @@ describe('AutoExtractedMetrics', () => {
 
       expect(emittedMetrics).toHaveLength(1);
       expect(emittedMetrics[0]!.metric.name).toBe('mastra_agent_runs_started');
-      expect(emittedMetrics[0]!.metric.metricType).toBe('counter');
       expect(emittedMetrics[0]!.metric.value).toBe(1);
       expect(emittedMetrics[0]!.metric.labels).toEqual({ entity_type: 'agent', entity_name: 'my-agent' });
     });
@@ -134,13 +133,11 @@ describe('AutoExtractedMetrics', () => {
       // Ended counter
       const endedMetric = emittedMetrics.find(m => m.metric.name === 'mastra_agent_runs_ended');
       expect(endedMetric).toBeDefined();
-      expect(endedMetric!.metric.metricType).toBe('counter');
       expect(endedMetric!.metric.labels).toEqual({ entity_type: 'agent', entity_name: 'my-agent', status: 'ok' });
 
       // Duration histogram
       const durationMetric = emittedMetrics.find(m => m.metric.name === 'mastra_agent_duration_ms');
       expect(durationMetric).toBeDefined();
-      expect(durationMetric!.metric.metricType).toBe('histogram');
       expect(durationMetric!.metric.value).toBe(1500);
     });
 
@@ -224,12 +221,10 @@ describe('AutoExtractedMetrics', () => {
 
       expect(emittedMetrics).toHaveLength(2);
       expect(emittedMetrics[0]!.metric.name).toBe('mastra_scores_total');
-      expect(emittedMetrics[0]!.metric.metricType).toBe('counter');
       expect(emittedMetrics[0]!.metric.value).toBe(1);
       expect(emittedMetrics[0]!.metric.labels).toEqual({ scorer: 'relevance' });
 
       expect(emittedMetrics[1]!.metric.name).toBe('mastra_score_value');
-      expect(emittedMetrics[1]!.metric.metricType).toBe('gauge');
       expect(emittedMetrics[1]!.metric.value).toBe(0.85);
       expect(emittedMetrics[1]!.metric.labels).toEqual({ scorer: 'relevance' });
     });
@@ -276,7 +271,6 @@ describe('AutoExtractedMetrics', () => {
       });
 
       expect(emittedMetrics[1]!.metric.name).toBe('mastra_feedback_value');
-      expect(emittedMetrics[1]!.metric.metricType).toBe('gauge');
       expect(emittedMetrics[1]!.metric.value).toBe(1);
     });
 

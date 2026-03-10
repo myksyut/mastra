@@ -38,7 +38,7 @@ function createTracingEvent(
 function createMetricEvent(): MetricEvent {
   return {
     type: 'metric',
-    metric: { timestamp: new Date(), name: 'test', metricType: 'counter', value: 1, labels: {} },
+    metric: { timestamp: new Date(), name: 'test', value: 1, labels: {} },
   };
 }
 

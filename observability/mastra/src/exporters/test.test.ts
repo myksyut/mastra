@@ -530,7 +530,6 @@ function createMockMetricEvent(overrides: Partial<ExportedMetric> = {}): MetricE
     metric: {
       timestamp: new Date(),
       name: 'mastra_test_counter',
-      metricType: 'counter',
       value: 1,
       labels: { env: 'test' },
       ...overrides,
@@ -636,9 +635,7 @@ describe('TestExporter - Metric Events', () => {
 
   it('should collect metric events', async () => {
     await exporter.onMetricEvent(createMockMetricEvent());
-    await exporter.onMetricEvent(
-      createMockMetricEvent({ name: 'mastra_agent_duration_ms', metricType: 'histogram', value: 1500 }),
-    );
+    await exporter.onMetricEvent(createMockMetricEvent({ name: 'mastra_agent_duration_ms', value: 1500 }));
 
     expect(exporter.getMetricEvents()).toHaveLength(2);
     expect(exporter.getAllMetrics()).toHaveLength(2);
@@ -646,9 +643,7 @@ describe('TestExporter - Metric Events', () => {
 
   it('should filter metrics by name', async () => {
     await exporter.onMetricEvent(createMockMetricEvent({ name: 'mastra_agent_runs_started' }));
-    await exporter.onMetricEvent(
-      createMockMetricEvent({ name: 'mastra_agent_duration_ms', metricType: 'histogram', value: 1500 }),
-    );
+    await exporter.onMetricEvent(createMockMetricEvent({ name: 'mastra_agent_duration_ms', value: 1500 }));
     await exporter.onMetricEvent(createMockMetricEvent({ name: 'mastra_agent_runs_started' }));
 
     const startedMetrics = exporter.getMetricsByName('mastra_agent_runs_started');
@@ -656,10 +651,10 @@ describe('TestExporter - Metric Events', () => {
   });
 
   it('should filter metrics by type', async () => {
-    await exporter.onMetricEvent(createMockMetricEvent({ metricType: 'counter' }));
-    await exporter.onMetricEvent(createMockMetricEvent({ metricType: 'histogram', name: 'duration', value: 100 }));
-    await exporter.onMetricEvent(createMockMetricEvent({ metricType: 'counter' }));
-    await exporter.onMetricEvent(createMockMetricEvent({ metricType: 'gauge', name: 'active', value: 5 }));
+    await exporter.onMetricEvent(createMockMetricEvent());
+    await exporter.onMetricEvent(createMockMetricEvent({ name: 'duration', value: 100 }));
+    await exporter.onMetricEvent(createMockMetricEvent());
+    await exporter.onMetricEvent(createMockMetricEvent({ name: 'active', value: 5 }));
 
     expect(exporter.getMetricsByType('counter')).toHaveLength(2);
     expect(exporter.getMetricsByType('histogram')).toHaveLength(1);
@@ -668,7 +663,7 @@ describe('TestExporter - Metric Events', () => {
 
   it('should store debug logs for metric events', async () => {
     await exporter.onMetricEvent(
-      createMockMetricEvent({ name: 'mastra_test', metricType: 'counter', value: 42, labels: { agent: 'test-agent' } }),
+      createMockMetricEvent({ name: 'mastra_test', value: 42, labels: { agent: 'test-agent' } }),
     );
 
     const debugLogs = exporter.getLogs();
@@ -915,8 +910,8 @@ describe('TestExporter - Statistics with All Signals', () => {
     await exporter.onLogEvent(createMockLogEvent({ level: 'error' }));
     await exporter.onLogEvent(createMockLogEvent({ level: 'info' }));
 
-    await exporter.onMetricEvent(createMockMetricEvent({ name: 'counter_a', metricType: 'counter' }));
-    await exporter.onMetricEvent(createMockMetricEvent({ name: 'hist_a', metricType: 'histogram', value: 100 }));
+    await exporter.onMetricEvent(createMockMetricEvent({ name: 'counter_a' }));
+    await exporter.onMetricEvent(createMockMetricEvent({ name: 'hist_a', value: 100 }));
 
     await exporter.onScoreEvent(createMockScoreEvent({ scorerName: 'relevance' }));
     await exporter.onScoreEvent(createMockScoreEvent({ scorerName: 'factuality' }));

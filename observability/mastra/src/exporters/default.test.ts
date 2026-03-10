@@ -949,7 +949,6 @@ describe('DefaultExporter', () => {
           metric: {
             timestamp: new Date('2026-01-01T00:00:00Z'),
             name: 'mastra_agent_runs_started',
-            metricType: 'counter',
             value: 1,
             labels: {
               entity_type: 'agent',
@@ -994,7 +993,6 @@ describe('DefaultExporter', () => {
           metric: {
             timestamp: new Date(),
             name: 'mastra_custom_metric',
-            metricType: 'gauge',
             value: 42,
             labels: { status: 'ok' },
           },
@@ -1131,7 +1129,7 @@ describe('DefaultExporter', () => {
 
         const metricEvent: MetricEvent = {
           type: 'metric',
-          metric: { timestamp: new Date(), name: 'test', metricType: 'counter', value: 1, labels: {} },
+          metric: { timestamp: new Date(), name: 'test', value: 1, labels: {} },
         };
 
         // Should not throw

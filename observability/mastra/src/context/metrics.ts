@@ -11,7 +11,6 @@ import type {
   Counter,
   Gauge,
   Histogram,
-  MetricType,
   ExportedMetric,
   MetricEvent,
 } from '@mastra/core/observability';
@@ -44,47 +43,40 @@ export class MetricsContextImpl implements MetricsContext {
     };
   }
 
-  /**
-   * Create a counter instrument. Call `.add(value)` to increment.
-   *
-   * @param name - Metric name (e.g. `mastra_custom_requests_total`).
-   */
+  /** Emit a metric observation. */
+  emit(name: string, value: number, labels?: Record<string, string>): void {
+    this.emitInternal(name, value, labels);
+  }
+
+  /** @deprecated Use `emit()` instead. */
   counter(name: string): Counter {
     return {
       add: (value: number, additionalLabels?: Record<string, string>) => {
-        this.emit(name, 'counter', value, additionalLabels);
+        this.emitInternal(name, value, additionalLabels);
       },
     };
   }
 
-  /**
-   * Create a gauge instrument. Call `.set(value)` to record a point-in-time value.
-   *
-   * @param name - Metric name (e.g. `mastra_queue_depth`).
-   */
+  /** @deprecated Use `emit()` instead. */
   gauge(name: string): Gauge {
     return {
       set: (value: number, additionalLabels?: Record<string, string>) => {
-        this.emit(name, 'gauge', value, additionalLabels);
+        this.emitInternal(name, value, additionalLabels);
       },
     };
   }
 
-  /**
-   * Create a histogram instrument. Call `.record(value)` to observe a measurement.
-   *
-   * @param name - Metric name (e.g. `mastra_request_duration_ms`).
-   */
+  /** @deprecated Use `emit()` instead. */
   histogram(name: string): Histogram {
     return {
       record: (value: number, additionalLabels?: Record<string, string>) => {
-        this.emit(name, 'histogram', value, additionalLabels);
+        this.emitInternal(name, value, additionalLabels);
       },
     };
   }
 
   /** Merge base + additional labels, apply cardinality filtering, and emit a MetricEvent. Non-finite values are silently dropped. */
-  private emit(name: string, metricType: MetricType, value: number, additionalLabels?: Record<string, string>): void {
+  private emitInternal(name: string, value: number, additionalLabels?: Record<string, string>): void {
     if (!Number.isFinite(value)) return;
 
     const allLabels = {
@@ -96,7 +88,6 @@ export class MetricsContextImpl implements MetricsContext {
     const exportedMetric: ExportedMetric = {
       timestamp: new Date(),
       name,
-      metricType,
       value,
       labels: filteredLabels,
     };

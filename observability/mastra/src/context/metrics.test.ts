@@ -40,7 +40,6 @@ describe('MetricsContextImpl', () => {
     expect(emittedEvents).toHaveLength(1);
     const m = emittedEvents[0]!.metric;
     expect(m.name).toBe('mastra_agent_runs');
-    expect(m.metricType).toBe('counter');
     expect(m.value).toBe(1);
     expect(m.labels).toEqual({ agent: 'test-agent' });
   });
@@ -59,7 +58,6 @@ describe('MetricsContextImpl', () => {
     expect(emittedEvents).toHaveLength(1);
     const m = emittedEvents[0]!.metric;
     expect(m.name).toBe('active_connections');
-    expect(m.metricType).toBe('gauge');
     expect(m.value).toBe(42);
   });
 
@@ -77,7 +75,6 @@ describe('MetricsContextImpl', () => {
     expect(emittedEvents).toHaveLength(1);
     const m = emittedEvents[0]!.metric;
     expect(m.name).toBe('request_duration_ms');
-    expect(m.metricType).toBe('histogram');
     expect(m.value).toBe(150);
   });
 

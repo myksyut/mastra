@@ -14,7 +14,6 @@ import type {
   FeedbackEvent,
   ExportedMetric,
   MetricEvent,
-  MetricType,
   AnyExportedSpan,
 } from '@mastra/core/observability';
 
@@ -58,8 +57,8 @@ export class AutoExtractedMetrics {
     if (event.score.experimentId) {
       labels.experiment = event.score.experimentId;
     }
-    this.emit('mastra_scores_total', 'counter', 1, labels);
-    this.emit('mastra_score_value', 'gauge', event.score.score, labels);
+    this.emit('mastra_scores_total', 1, labels);
+    this.emit('mastra_score_value', event.score.score, labels);
   }
 
   /** Emit `mastra_feedback_total` counter and `mastra_feedback_value` gauge for a feedback event. */
@@ -74,10 +73,10 @@ export class AutoExtractedMetrics {
     if (event.feedback.experimentId) {
       labels.experiment = event.feedback.experimentId;
     }
-    this.emit('mastra_feedback_total', 'counter', 1, labels);
+    this.emit('mastra_feedback_total', 1, labels);
     const numericValue = typeof event.feedback.value === 'number' ? event.feedback.value : NaN;
     if (Number.isFinite(numericValue)) {
-      this.emit('mastra_feedback_value', 'gauge', numericValue, labels);
+      this.emit('mastra_feedback_value', numericValue, labels);
     }
   }
 
@@ -86,7 +85,7 @@ export class AutoExtractedMetrics {
     const labels = this.extractLabels(span);
     const metricName = this.getStartedMetricName(span);
     if (metricName) {
-      this.emit(metricName, 'counter', 1, labels);
+      this.emit(metricName, 1, labels);
     }
   }
 
@@ -103,7 +102,7 @@ export class AutoExtractedMetrics {
       } else {
         endedLabels.status = 'ok';
       }
-      this.emit(endedMetricName, 'counter', 1, endedLabels);
+      this.emit(endedMetricName, 1, endedLabels);
     }
 
     // Duration histogram
@@ -116,7 +115,7 @@ export class AutoExtractedMetrics {
       } else {
         durationLabels.status = 'ok';
       }
-      this.emit(durationMetricName, 'histogram', durationMs, durationLabels);
+      this.emit(durationMetricName, durationMs, durationLabels);
     }
 
     // Token metrics for model generation spans
@@ -152,21 +151,21 @@ export class AutoExtractedMetrics {
 
     const inputTokens = Number(usage.inputTokens);
     if (Number.isFinite(inputTokens) && inputTokens >= 0) {
-      this.emit('mastra_model_input_tokens', 'counter', inputTokens, labels);
+      this.emit('mastra_model_input_tokens', inputTokens, labels);
     }
     const outputTokens = Number(usage.outputTokens);
     if (Number.isFinite(outputTokens) && outputTokens >= 0) {
-      this.emit('mastra_model_output_tokens', 'counter', outputTokens, labels);
+      this.emit('mastra_model_output_tokens', outputTokens, labels);
     }
 
     const inputDetails = usage.inputDetails as Record<string, unknown> | undefined;
     const cacheRead = Number(inputDetails?.cacheRead);
     if (Number.isFinite(cacheRead) && cacheRead >= 0) {
-      this.emit('mastra_model_cache_read_tokens', 'counter', cacheRead, labels);
+      this.emit('mastra_model_cache_read_tokens', cacheRead, labels);
     }
     const cacheWrite = Number(inputDetails?.cacheWrite);
     if (Number.isFinite(cacheWrite) && cacheWrite >= 0) {
-      this.emit('mastra_model_cache_write_tokens', 'counter', cacheWrite, labels);
+      this.emit('mastra_model_cache_write_tokens', cacheWrite, labels);
     }
   }
 
@@ -219,12 +218,11 @@ export class AutoExtractedMetrics {
   }
 
   /** Build an ExportedMetric, apply cardinality filtering, and emit it through the bus. */
-  private emit(name: string, metricType: MetricType, value: number, labels: Record<string, string>): void {
+  private emit(name: string, value: number, labels: Record<string, string>): void {
     const filteredLabels = this.cardinalityFilter ? this.cardinalityFilter.filterLabels(labels) : labels;
     const exportedMetric: ExportedMetric = {
       timestamp: new Date(),
       name,
-      metricType,
       value,
       labels: filteredLabels,
     };
