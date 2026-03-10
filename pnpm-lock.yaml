@@ -3142,8 +3142,8 @@ importers:
         specifier: ^0.6.4
         version: 0.6.4(ws@8.19.0)(zod@3.25.76)
       '@composio/mastra':
-        specifier: ^0.6.3
-        version: 0.6.3(@composio/core@0.6.4(ws@8.19.0)(zod@3.25.76))(@mastra/core@packages+core)(zod@3.25.76)
+        specifier: ^0.6.4
+        version: 0.6.4(@composio/core@0.6.4(ws@8.19.0)(zod@3.25.76))(@mastra/core@packages+core)(zod@3.25.76)
       '@mastra/memory':
         specifier: workspace:*
         version: link:../memory
@@ -8360,10 +8360,10 @@ packages:
     peerDependencies:
       zod: '>=3.25.76 <5'
 
-  '@composio/mastra@0.6.3':
-    resolution: {integrity: sha512-KaJe/mlT09AX93mqTJ7jO6dH1r2U4c7MKDnRj+GwwJVM05thMhPvmanCfKcZ6U/HdB9kTx2isMf2NCN6MStg7A==}
+  '@composio/mastra@0.6.4':
+    resolution: {integrity: sha512-+AtpWjTSKRM7SThlCxTqMBnwI2IfJGYYlBMknetjhcnIT/rztlX8wMGHezICXZgHpoKDlxYyU9iWZtrqJ95xQg==}
     peerDependencies:
-      '@composio/core': 0.6.3
+      '@composio/core': 0.6.4
       '@mastra/core': ^1.0.4
       zod: ^3.25 || ^4
 
@@ -27076,7 +27076,7 @@ snapshots:
     dependencies:
       zod: 3.25.76
 
-  '@composio/mastra@0.6.3(@composio/core@0.6.4(ws@8.19.0)(zod@3.25.76))(@mastra/core@packages+core)(zod@3.25.76)':
+  '@composio/mastra@0.6.4(@composio/core@0.6.4(ws@8.19.0)(zod@3.25.76))(@mastra/core@packages+core)(zod@3.25.76)':
     dependencies:
       '@composio/core': 0.6.4(ws@8.19.0)(zod@3.25.76)
       '@mastra/core': link:packages/core
